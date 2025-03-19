@@ -1,0 +1,53 @@
+﻿<Window x:Class="Sudo2.ContextMenu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sudo2"
+        mc:Ignorable="d"
+
+            WindowStartupLocation="Manual" 
+        ResizeMode="CanMinimize"
+        
+       BorderBrush="Red" BorderThickness="3" 
+        WindowStyle="None"
+         Loaded="Window_Loaded"
+        Title="ContextMenu" Height="200" Width="300" IsVisibleChanged="Window_IsVisibleChanged" StateChanged="Window_StateChanged">
+    <Grid>
+        <GroupBox Background="Black" BorderThickness="0" Margin="-1,-2,-1,-1">
+            <Grid Margin="-3,0,-9,-9">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="66*"/>
+                    <RowDefinition Height="104*"/>
+                    <RowDefinition Height="29*"/>
+
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="67*"/>
+                    <ColumnDefinition Width="162*"/>
+                    <ColumnDefinition Width="67*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="contx" Text="Ошибка" Foreground="Red" Grid.Column="1" TextAlignment="Center"  VerticalAlignment="Center" FontSize="35" Height="46"/>
+                <TextBlock x:Name="TBERROR"  Foreground="Red" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" TextWrapping="Wrap"  VerticalAlignment="Center" FontSize="25" />
+
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="AutoSave" Background="Black" BorderThickness="0" Margin="-1,-2,-1,-1" Visibility="Collapsed" IsVisibleChanged="Window_IsVisibleChanged" >
+            <Grid Margin="-3,0,-6,-9">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Название сохранения" Foreground="Red" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center"  VerticalAlignment="Center" FontSize="28" Height="46"/>
+                <TextBox x:Name="text" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Название" MaxLength="10" Width="170" Height="45" FontSize="30" BorderBrush="Red" BorderThickness="2" Background="#FFFFFDD3" PreviewKeyDown="text_PreviewKeyDown" />
+                <Button x:Name="BtAutoSaveOut" Grid.Row="2" Grid.Column="0" Content="Назад"  BorderBrush="red"  Background="#FFCEC4C4" Margin="15,15,15,15" FontSize="20" BorderThickness="2" Click="AutoSave_Click"/>
+                <Button x:Name="BtAutoSaveGo" Grid.Row="2" Grid.Column="1" Content="Начать"  BorderBrush="red"  Background="#FFCEC4C4" Margin="15,15,15,15" FontSize="20" BorderThickness="2" Click="AutoSave_Click"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
