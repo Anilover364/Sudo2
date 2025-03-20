@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 
@@ -75,6 +77,7 @@ namespace Sudo2
         {
             var Bt = sender as Button;
             var ChItem = LBSave.SelectedItem;
+            string name;
             switch (Bt.Name)
                 {
                 case "NgBt":
@@ -135,34 +138,38 @@ namespace Sudo2
                     GBMenu.Visibility = Visibility.Visible;
                     break;
                 case "PCOutBt":
-                    GBComp.Visibility = Visibility.Collapsed;
-                    GBMenu.Visibility = Visibility.Visible;
-                    RBLig.IsChecked = false;
-                    RBDif.IsChecked = false;
-                    RBHar.IsChecked = false;
-                    RBFree.IsChecked = false;
+                    name = "PCOutBt";
+                    ClickOrBut(name);
+                    //GBComp.Visibility = Visibility.Collapsed;
+                    //GBMenu.Visibility = Visibility.Visible;
+                    //RBLig.IsChecked = false;
+                    //RBDif.IsChecked = false;
+                    //RBHar.IsChecked = false;
+                    //RBFree.IsChecked = false;
                     break ;
                 case "GoGameBt":
-                    if (DataFunc.AutoSave == false)
-                    {
-                    Game.Saved = false;
-                    //GBMenu.Visibility = Visibility.Visible;
-                    new Game().Show();
-                        this.Close();
+                     name = "GoGameBt";
+                    ClickOrBut(name);
+                    //if (DataFunc.AutoSave == false)
+                    //{
+                    //Game.Saved = false;
+                    ////GBMenu.Visibility = Visibility.Visible;
+                    //new Game().Show();
+                    //    this.Close();
 
-                    }
-                    else 
-                    {
-                        if (!secondWindow.IsVisible)
-                        {
-                            //GoGameBt.IsEnabled = false;
-                            PCOutBt.Visibility = Visibility.Collapsed;
-                            GoGameBt.Visibility = Visibility.Collapsed;
-                            secondWindow.AutoSave.Visibility = Visibility.Visible;
-                            secondWindow.Show();
-                            secondWindow.text.Focus(); secondWindow.text.SelectAll();
-                        }
-                    }
+                    //}
+                    //else 
+                    //{
+                    //    if (!secondWindow.IsVisible)
+                    //    {
+                    //        //GoGameBt.IsEnabled = false;
+                    //        PCOutBt.Visibility = Visibility.Collapsed;
+                    //        GoGameBt.Visibility = Visibility.Collapsed;
+                    //        secondWindow.AutoSave.Visibility = Visibility.Visible;
+                    //        secondWindow.Show();
+                    //        secondWindow.text.Focus(); secondWindow.text.SelectAll();
+                    //    }
+                    //}
                     //GoGameBt.IsEnabled = false;
                     break;
                 case "RsOutBt":
@@ -200,8 +207,8 @@ namespace Sudo2
                             //    int LineMistMax = 21;
                             //    int LineZero = 22;
                                 
-                                int[] m = new int[81];
-                                int[] n = new int[81];
+                                int[,] m = new int[9,9];
+                                int[,] n = new int[9,9];
                                 string jaja;
                                 gigi = "";
                                 prov = "";
@@ -212,13 +219,23 @@ namespace Sudo2
                                 string lineContentMap = File.ReadLines(PathSave).ElementAtOrDefault(0);
                                 string lineContentProv = File.ReadLines(PathSave).ElementAtOrDefault(10);
                                 string lineContentMist = File.ReadLines(PathSave).ElementAtOrDefault(20);
-                                lineContentMist = lineContentMist.Substring(0,5);
+                                //if(lineContentMist)
+                                if (!string.IsNullOrWhiteSpace(lineContentMist))
+                                {
+                                    lineContentMist = lineContentMist.Substring(0, 5);
+                                }
+                                //else { SaveChoosen = true; }
                                 string lineContentMMax = File.ReadLines(PathSave).ElementAtOrDefault(21);
-                                lineContentMMax = lineContentMMax.Substring(0, 5);
+                                if (!string.IsNullOrWhiteSpace(lineContentMMax))
+                                {
+                                    lineContentMMax = lineContentMMax.Substring(0, 5);
+                                }
                                 string lineContentzero = File.ReadLines(PathSave).ElementAtOrDefault(22);
-                                lineContentzero = lineContentzero.Substring(0, 5);
-
-                                if (lineContentMap != "карта" || lineContentProv != "проверка"|| lineContentMist!="mist="|| lineContentMMax!="MMax="|| lineContentzero!="zero=")
+                                if (!string.IsNullOrWhiteSpace(lineContentzero))
+                                {
+                                    lineContentzero = lineContentzero.Substring(0, 5);
+                                }
+                                if (lineContentMap != "карта" || lineContentProv != "проверка" || lineContentMist != "mist=" || lineContentMMax != "MMax=" || lineContentzero != "zero=")
                                 {
                                     //   Game.Saved = true;
                                     //   new Game().Show();
@@ -235,7 +252,10 @@ namespace Sudo2
                                         {
                                             for (int i = 0; i < 9; i++)
                                             {
+
                                                 jaja = test.ReadLine();
+                                                //int.TryParse(jaja, out int cc);
+                                                //if(cc)
                                                 gigi += jaja;
                                             }
                                         }
@@ -251,65 +271,181 @@ namespace Sudo2
                                         if (line1.Substring(0, 4) == "mist")
                                         {
                                             jaja = line1.Substring(5);
+                                            //if(int.TryParse jaja,out q){ }
+                                            if (!int.TryParse(jaja, out int q))
+                                            {
+                                                SaveChoosen=true;
+                                                break;
+                                                //jaja = "666666";
+                                            }
                                             //context.Text = jaja;
+                                            if (jaja.Length >= 6)
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                            }
                                             Game.mist = Convert.ToInt32(jaja);
 
                                         }
                                         if (line1.Substring(0, 4) == "MMax")
                                         {
                                             jaja = line1.Substring(5);
+                                            if (!int.TryParse(jaja, out int q))
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                            }
                                             //context.Text = jaja;
+                                            if (jaja.Length >= 6)
+                                            {
+                                                SaveChoosen = true;
+                                                //MessageBox.Show("asda");
+                                                break;
+                                            }
                                             Game.mistMax = Convert.ToInt32(jaja);
 
                                         }
                                         if (line1.Substring(0, 4) == "zero")
                                         {
                                             jaja = line1.Substring(5);
+                                            if (!int.TryParse(jaja, out int q))
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                            }
                                             //context.Text = jaja;
+                                            if (jaja.Length >= 3)
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                            }
                                             localzero = Convert.ToInt32(jaja);
 
                                         }
                                     }
                                     //РАБОТАЕТ
-                                    foreach (char c in prov)
+                                    //int.TryParse(gigi, out int cc);
+                                    //int.TryParse(prov, out int ccc);
+                                    //if (cc!=0&ccc!=0)
+                                    //{
+                                    if (SaveChoosen == false)
                                     {
-
-                                        int p = Convert.ToInt32(c.ToString());
-                                        if (p == 0)
+                                        foreach (char c in gigi)
                                         {
-                                            SaveChoosen = true;
-                                            //MessageBox.Show("PISA");
 
-                                        }
-                                    }
-                                    //РАБОТАЕТ НО ДОДЕЛАТЬ
-                                    for (int i = 0; i < 81; i++)
-                                    {
-
-
-
-                                        m[i] = Convert.ToInt32(gigi[i].ToString());
-                                        n[i] = Convert.ToInt32(prov[i].ToString());
-
-                                        if (gigi[i] == '0') { Game.zero++; }
-                                        if (m[i] != 0) if (m[i] != n[i])
+                                            //int p = Convert.ToInt32(c.ToString());
+                                            if (!int.TryParse(c.ToString(), out int p))
                                             {
                                                 SaveChoosen = true;
-                                                //MessageBox.Show(NoMistStep.ToString());
                                                 break;
+                                                //MessageBox.Show("PISA");
+
                                             }
-                                
+                                        }
+                                        foreach (char c in prov)
+                                        {
+                                            int.TryParse(c.ToString(), out int p);
+                                            //int p = Convert.ToInt32(c.ToString());
+                                            if (p == 0)
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                                //MessageBox.Show("PISA");
 
-
+                                            }
+                                        }
                                     }
 
-                                    if (Game.mist > Game.mistMax || Game.mist < 0 || Game.mist == Game.mistMax || Game.mistMax >= 10000 || Game.mistMax <= 0 || localzero <= 0 || localzero >= 81 || localzero != Game.zero || Game.zero == 0)
+                                    if (SaveChoosen == false)
                                     {
-                                        SaveChoosen = true;
-                                        //MessageBox.Show(localzero.ToString());
-                                    
-                                    }
+                                        int h = 0;
+                                        int row = 0;
+                                        int col = 0;
+                                        for (int i = 0; i < 9; i++)
+                                        {
+                                            for (int j = 0; j < 9; j++)
+                                            {
 
+                                                m[i,j] = Convert.ToInt32(gigi[h].ToString());
+                                                n[i,j] = Convert.ToInt32(prov[h].ToString());
+
+                                                if (gigi[h] == '0') { Game.zero++; }
+                                                if (m[i,j] != 0) if (m[i,j] != n[i, j])
+                                                    {
+                                                        SaveChoosen = true;
+                                                        //MessageBox.Show(NoMistStep.ToString());
+                                                        break;
+                                                    }
+                                                row += n[i, j];
+                                                if ((h + 1) % 9 == 0) 
+                                                {
+                                                    if (row != 45) 
+                                                    {
+
+                                                        SaveChoosen = true;
+                                                        break;
+                                                    }
+                                                }
+                                                h++;
+                                            }
+                                                row = 0;
+
+                                        }
+                                        h = 0;
+                                        for (int i = 0; i < 9; i++)
+                                        {
+                                            for (int j = 0; j < 9; j++)
+                                            {
+
+                                                //MessageBox.Show((n[j,i]).ToString());
+                                                col += n[j, i];
+                                                if ((h + 1) % 9 == 0)
+                                                {
+                                                    if (col != 45)
+                                                    {
+                                                        //MessageBox.Show((n[j, i]).ToString());
+                                                        SaveChoosen = true;
+                                                        break;
+                                                    }
+                                                }
+                                                h++;
+                                            }
+                                            col = 0;
+                                            }
+                                        }
+                                    
+
+                                    //РАБОТАЕТ НО ДОДЕЛАТЬ
+                                    //if (SaveChoosen == false)
+                                    //{
+                                    //    for (int i = 0; i < 81; i++)
+                                    //    {
+
+                                    //        m[i] = Convert.ToInt32(gigi[i].ToString());
+                                    //        n[i] = Convert.ToInt32(prov[i].ToString());
+
+                                    //        if (gigi[i] == '0') { Game.zero++; }
+                                    //        if (m[i] != 0) if (m[i] != n[i])
+                                    //            {
+                                    //                SaveChoosen = true;
+                                    //                //MessageBox.Show(NoMistStep.ToString());
+                                    //                break;
+                                    //            }
+
+
+
+                                    //    }
+                                    //}
+
+
+                                        if (Game.mist > Game.mistMax || Game.mist < 0 || Game.mist == Game.mistMax || Game.mistMax >= 10000 || Game.mistMax <= 0 || localzero <= 0 || localzero >= 81 || localzero != Game.zero || Game.zero == 0)
+                                        {
+                                            SaveChoosen = true;
+                                            //MessageBox.Show(localzero.ToString());
+
+                                        }
+                                    //} else { SaveChoosen = true; }
+                                    
                                     test.Close();
 
                                 }
@@ -393,8 +529,14 @@ namespace Sudo2
                         TempSavesNameWrite.Close();
                         File.Delete(PathSavesNameDel);
                         File.Move(TempPathSavesNameDel, PathSavesNameDel);
-                        if(ErrorChar==false)
-                        File.Delete(PathSave);
+                        if (ErrorChar == false)
+                            //if (File.OpenRead(PathSave) != null && File.OpenText(PathSave).BaseStream.CanRead)
+                            //{
+                            //    MessageBox.Show("lala");
+                                File.Delete(PathSave);
+
+                            //}
+                            //else { MessageBox.Show("lala"); }
                         LBSave.Items.RemoveAt(LBSave.SelectedIndex);
                         if (!secondWindow.IsVisible)
                         {
@@ -855,6 +997,79 @@ namespace Sudo2
             //this.Close
             //}
             secondWindow.WindowState=this.WindowState;
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string name;
+                switch (true) 
+                {
+         
+                    case bool _ when GoGameBt.IsVisible && GoGameBt.IsEnabled:
+                        //MessageBox.Show("lala1");
+                         name = "GoGameBt";
+                        ClickOrBut(name);
+
+                        break;
+                    case bool _ when secondWindow.BtAutoSaveGo.IsVisible && secondWindow.BtAutoSaveGo.IsEnabled:
+                        MessageBox.Show("lal2");
+                        break;
+                    case bool _ when RsGoGameBt.IsVisible && RsGoGameBt.IsEnabled:
+                        name = "RsGoGameBt";
+                        ClickOrBut(name);
+                        break;
+                }
+            }
+            else if (e.Key == Key.Escape) 
+            {
+                string name;
+                switch (true)
+                {
+
+                    case bool _ when PCOutBt.IsVisible && PCOutBt.IsEnabled:
+                        name = "PCOutBt";
+                        ClickOrBut(name);
+                        break;
+                }
+                }
+        }
+        static void ClickOrBut(string name) 
+        {
+            switch (name) 
+            {
+                case "GoGameBt":
+                    if (DataFunc.AutoSave == false)
+                    {
+                        Game.Saved = false;
+                        //GBMenu.Visibility = Visibility.Visible;
+                        new Game().Show();
+                        MainWindow.CurrentInstance.Close();
+
+                    }
+                    else
+                    {
+                        if (!MainWindow.CurrentInstance.secondWindow.IsVisible)
+                        {
+                            //GoGameBt.IsEnabled = false;
+                            MainWindow.CurrentInstance.PCOutBt.Visibility = Visibility.Collapsed;
+                            MainWindow.CurrentInstance.GoGameBt.Visibility = Visibility.Collapsed;
+                            MainWindow.CurrentInstance.secondWindow.AutoSave.Visibility = Visibility.Visible;
+                            MainWindow.CurrentInstance.secondWindow.Show();
+                            MainWindow.CurrentInstance.secondWindow.text.Focus(); MainWindow.CurrentInstance.secondWindow.text.SelectAll();
+                        }
+                    }
+                    break;
+                case "PCOutBt":
+                    MainWindow.CurrentInstance.GBComp.Visibility = Visibility.Collapsed;
+                    MainWindow.CurrentInstance.GBMenu.Visibility = Visibility.Visible;
+                    MainWindow.CurrentInstance.RBLig.IsChecked = false;
+                    MainWindow.CurrentInstance.RBDif.IsChecked = false;
+                    MainWindow.CurrentInstance.RBHar.IsChecked = false;
+                    MainWindow.CurrentInstance.RBFree.IsChecked = false;
+                    break;
+            }
         }
     }
    

@@ -10,7 +10,7 @@
          Closing="Window_Closing" 
        BorderBrush="Red" BorderThickness="3" 
         
-        Title="MainMenu" Height="500" Width="350" ResizeMode="CanMinimize" StateChanged="Window_StateChanged"  >
+        Title="MainMenu" Height="500" Width="350" ResizeMode="CanMinimize" StateChanged="Window_StateChanged" KeyDown="Window_KeyDown"  >
 
     <Grid>
 

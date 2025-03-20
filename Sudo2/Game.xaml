@@ -710,8 +710,9 @@
             <MenuItem  Header="Настройки" Foreground="White" FontSize="15.2">
                 <MenuItem x:Name="MenuAutoSave"  Header="Автосохранение" Foreground="Black"  IsChecked="False" ToolTip="Автосохранение игры" Click="MenuClick" />
                 <MenuItem x:Name="MenuWinStyle" Header="Оконный режим" Foreground="Black"  IsChecked="False" ToolTip="Изменить стиль окна" Click="MenuClick"/>
-                
-            </MenuItem>
+                     </MenuItem>
+            <MenuItem  x:Name="MainMenu" Header="Главное меню"   Foreground="White" FontSize="15.2" ToolTip="Выход в главное меню" Click="MenuClick"/>
+
         </Menu>
 
     </Grid>

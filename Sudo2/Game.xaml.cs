@@ -481,7 +481,7 @@ namespace Sudo2
             string hexColor1 = "#FFD4CC00";
     
             Color color1 = (Color)ColorConverter.ConvertFromString(hexColor1);
-
+            //if (m[x, y] == n[x, y]) { context.Text = ""; }
             if (GameEnd == false & DataFunc.AutoSave == true & Game.CurrentInstance.Title == "Новая игра ") { GameEnd = true; context.Text = "При автосохранении обьявите\r\n название сохранeния";/* if (text.IsVisible == false) {*/ text.Visibility = Visibility; /* text.Focus();  text.SelectAll(); } */}
             //добавляем кнопки
             if (GameEnd == false)
@@ -494,6 +494,7 @@ namespace Sudo2
                         {
                             lastButton.Content = n[x, y].ToString();
                             m[x, y] = n[x, y];
+                            if (m[x, y] == n[x, y]) { context.Text = ""; }
                             FastLocCount++;
                             zero--;
 
@@ -549,6 +550,7 @@ namespace Sudo2
                                 {
                                 NowutNamePan.IsEnabled = false;
                                     if(context.Text == "Выбранная клетка имеет значение"){context.Text = $"Значение {m[x, y]} есть во всех блоках "; }
+                           
                                 }
                             }
                         }
@@ -556,7 +558,7 @@ namespace Sudo2
                 }
             }
             LastButton.Background = Brushes.Yellow;
-
+            //if (m[x, y] == n[x, y]) { context.Text = ""; }
 
         }
 
@@ -833,6 +835,10 @@ namespace Sudo2
                         //    Header = "Выход"
                         //};
                     }
+                    break;
+                case "MainMenu":
+                    new MainWindow().Show();
+                    this.Close();
                     break;
             }
         }
