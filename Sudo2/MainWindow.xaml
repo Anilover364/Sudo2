@@ -10,7 +10,7 @@
          Closing="Window_Closing" 
        BorderBrush="Red" BorderThickness="3" 
         
-        Title="MainMenu" Height="500" Width="350" ResizeMode="CanMinimize" StateChanged="Window_StateChanged" KeyDown="Window_KeyDown"  >
+        Title="MainMenu" Height="500" Width="350" ResizeMode="CanMinimize" StateChanged="Window_StateChanged" KeyDown="Window_KeyDown" Icon="/Ico.png"  >
 
     <Grid>
 
@@ -43,7 +43,7 @@
 
                 <Viewbox Grid.Row="1">
 
-                    <Button x:Name="NgBt" Content="Новая игра"  FontSize="13" Margin="30,5,30,5" Height="30" Width="90" BorderThickness="1" Background="#FFCEC4C4" BorderBrush="Red" Click="Click"/>
+                    <Button x:Name="NgBt" Content="Новая игра" Focusable="False" FontSize="13" Margin="30,5,30,5" Height="30" Width="90" BorderThickness="1" Background="#FFCEC4C4" BorderBrush="Red" Click="Click"/>
                 </Viewbox>
                 <Viewbox Grid.Row="2">
 
@@ -68,7 +68,20 @@
 
         <GroupBox x:Name="GBHelp" Background="Black" BorderThickness="0" Margin="-2,-2,-2,-2" Visibility="Collapsed" >
             <Grid>
-                <Button x:Name="HpOutBt" Content="Бог поможет" FontSize="13" Margin="30,5,30,5" Height="30" Width="90" BorderThickness="1" Background="#FFCEC4C4" BorderBrush="Red" Click="Click"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="33*"/>
+                    <RowDefinition Height="353*"/>
+                    <RowDefinition Height="89*"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer x:Name="scroll" VerticalScrollBarVisibility="Auto" Grid.Row="1" ScrollChanged="ScrollViewer_ScrollChanged" >
+
+                    <RichTextBox  x:Name="quan" Margin="-1,0,-1,0" HorizontalAlignment="Left" IsReadOnly="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="Black"  VerticalAlignment="Center" />
+
+                </ScrollViewer>
+                <!--<Button x:Name="HpOutBt" Grid.Row="2" Content="Бог поможет" FontSize="13" Margin="30,5,30,5" Height="30" Width="90" BorderThickness="1" Background="#FFCEC4C4" BorderBrush="Red" Click="Click"/>-->
+                <Viewbox  Grid.Row="2" Margin="40,15,40,15">
+                    <Button x:Name="HpOutBt" Content="Назад" FontSize="13"  Height="30" Width="90" BorderThickness="1" Visibility="Collapsed" Background="#FFCEC4C4" BorderBrush="Red" Click="Click"/>
+                </Viewbox>
             </Grid>
 
         </GroupBox>

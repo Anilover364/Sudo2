@@ -246,6 +246,9 @@ namespace Sudo2
         {
             InTemp=true;
             DataFunc.CheckDirectory();
+            string first = "";
+            string sec = "";
+            double check;
             var PathSaveCopy = Directory.GetCurrentDirectory();
             PathSaveCopy += $@"\SudoData\Saves\{Save}-Copy.txt";
             var PathSave = Directory.GetCurrentDirectory();
@@ -281,6 +284,11 @@ namespace Sudo2
             SaveCopy.WriteLine($"MMax={Game.mistMax}");
             SaveCopy.WriteLine($"zero={Game.zero}");
             //lana.WriteLine(":lalala");
+            first = (Game.n[0, 0] + Game.n[0, 1] + Game.n[1, 0] + Game.n[1, 1]).ToString();
+            sec = (Game.n[7, 7] + Game.n[7, 8] + Game.n[8, 7] + Game.n[8, 8]).ToString();
+            check = (Convert.ToDouble(first) + Convert.ToDouble(Game.mist)) / Convert.ToDouble(sec);
+            check=Math.Round(check,5);
+            SaveCopy.WriteLine($"check={check}");
             SaveCopy.Close();
             File.Delete(PathSave);
             File.Move(PathSaveCopy, PathSave);
@@ -299,7 +307,9 @@ namespace Sudo2
             StreamWriter SavesNameIN = new StreamWriter(PathSavesName, true);
             SavesNameIN.WriteLine(Save);
             SavesNameIN.Close();
-
+            string first = "";
+            string sec = "";
+            double check ;
             var PathSave = Directory.GetCurrentDirectory();
             PathSave += $@"\SudoData\Saves\{Save}.txt";
             StreamWriter lana = new StreamWriter(PathSave);
@@ -317,6 +327,7 @@ namespace Sudo2
                     lana.Write(numbut);
                 }
                 lana.WriteLine();
+               
             }
 
             lana.WriteLine("проверка");
@@ -333,9 +344,13 @@ namespace Sudo2
             lana.WriteLine($"mist={Game.mist}");
             lana.WriteLine($"MMax={Game.mistMax}");
             lana.WriteLine($"zero={Game.zero}");
-            //lana.WriteLine(":lalala");
+            first = (Game.n[0,0]+Game.n[0, 1] + Game.n[1, 0]+ Game.n[1, 1]).ToString();
+            sec = (Game.n[7, 7] + Game.n[7, 8] + Game.n[8,7] + Game.n[8, 8]).ToString();
+            check=(Convert.ToDouble(first)+ Convert.ToDouble(Game.mist))/ Convert.ToDouble(sec);
+            check = Math.Round(check, 5);
+            lana.WriteLine($"check={check}");
+            //lana.WriteLine(Game.n[0,0].ToString(), Game.n[0, 1].ToString(), Game.n[0, 2].ToString());
             lana.Close();
-
             if (Game.CurrentInstance.Title == "Новая игра ")
             {
                 Game.CurrentInstance.Title = Save;
@@ -359,6 +374,7 @@ namespace Sudo2
             {
                 // Если файл не существует, создаем его
                 Directory.CreateDirectory(PathSave);
+
                 //MessageBox.Show("lala");
             }
             if (!File.Exists(SudoData))

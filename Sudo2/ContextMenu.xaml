@@ -12,7 +12,7 @@
        BorderBrush="Red" BorderThickness="3" 
         WindowStyle="None"
          Loaded="Window_Loaded"
-        Title="ContextMenu" Height="200" Width="300" IsVisibleChanged="Window_IsVisibleChanged" StateChanged="Window_StateChanged">
+        Title="ContextMenu" Height="200" Width="300" IsVisibleChanged="Window_IsVisibleChanged" StateChanged="Window_StateChanged" Icon="/Ico.png">
     <Grid>
         <GroupBox Background="Black" BorderThickness="0" Margin="-1,-2,-1,-1">
             <Grid Margin="-3,0,-9,-9">

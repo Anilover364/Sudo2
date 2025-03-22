@@ -33,6 +33,7 @@ namespace Sudo2
         {
             InitializeComponent();
             CurrentInstance = this;
+            
             //Title = Game.ChSave;
             //MessageBox.Show(Game.ChSave);
             //подставлем значение массива на игровое поле, заполняем массив для сверки
@@ -552,7 +553,7 @@ namespace Sudo2
                                     if(context.Text == "Выбранная клетка имеет значение"){context.Text = $"Значение {m[x, y]} есть во всех блоках "; }
                            
                                 }
-                            }
+                            }    
                         }
                     }
                 }

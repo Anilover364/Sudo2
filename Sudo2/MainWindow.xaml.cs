@@ -33,7 +33,8 @@ namespace Sudo2
         public MainWindow()
         {
             InitializeComponent();
-            Icon=null;
+            //NgBt.Focusable = false;
+
             CurrentInstance = this; // Сохраняем ссылку на текущий экземпляр
             //Добавляем контекстное окно и задаем параметры
             secondWindow = new ContextMenu();
@@ -70,6 +71,8 @@ namespace Sudo2
                 }
                 Game.FileError =false;
             }
+            //TBZeros.Text = "Количество нулей";
+            display();
         }
         //кнопки взаимодействия (все)
        
@@ -136,6 +139,7 @@ namespace Sudo2
                 case "HpOutBt":
                     GBHelp.Visibility = Visibility.Collapsed;
                     GBMenu.Visibility = Visibility.Visible;
+                    scroll.ScrollToHome();
                     break;
                 case "PCOutBt":
                     name = "PCOutBt";
@@ -198,6 +202,7 @@ namespace Sudo2
                                 string line1;
                                 int localzero = 0;
                                 Game.zero = 0;
+                                double localcheck = 0;
                                bool SaveChoosen=false;
                             
                           
@@ -235,7 +240,12 @@ namespace Sudo2
                                 {
                                     lineContentzero = lineContentzero.Substring(0, 5);
                                 }
-                                if (lineContentMap != "карта" || lineContentProv != "проверка" || lineContentMist != "mist=" || lineContentMMax != "MMax=" || lineContentzero != "zero=")
+                                string lineContentcheck = File.ReadLines(PathSave).ElementAtOrDefault(23);
+                                if (!string.IsNullOrWhiteSpace(lineContentcheck))
+                                {
+                                    lineContentcheck = lineContentcheck.Substring(0, 6);
+                                }
+                                if (lineContentMap != "карта" || lineContentProv != "проверка" || lineContentMist != "mist=" || lineContentMMax != "MMax=" || lineContentzero != "zero="|| lineContentcheck!="check=")
                                 {
                                     //   Game.Saved = true;
                                     //   new Game().Show();
@@ -320,6 +330,23 @@ namespace Sudo2
                                                 break;
                                             }
                                             localzero = Convert.ToInt32(jaja);
+
+                                        }
+                                        if (line1.Substring(0, 5) == "check")
+                                        {
+                                            jaja = line1.Substring(6);
+                                            if (!double.TryParse(jaja, out double q))
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                            }
+                                            //context.Text = jaja;
+                                            if (jaja.Length >= 8)
+                                            {
+                                                SaveChoosen = true;
+                                                break;
+                                            }
+                                            localcheck = Convert.ToDouble(jaja);
 
                                         }
                                     }
@@ -413,29 +440,39 @@ namespace Sudo2
                                             col = 0;
                                             }
                                         }
-                                    
+                                    if (SaveChoosen == false)
+                                    {
+                                        int first = n[0, 0] + n[0, 1] + n[1, 0] + n[1, 1];
+                                        int sec = n[7, 7] + n[7, 8] + n[8, 7] + n[8, 8];
+                                        double check = (Convert.ToDouble(first) + Convert.ToDouble(Game.mist)) / Convert.ToDouble(sec);
+                                        check = Math.Round(check, 5);
+                                        if (localcheck != check) 
+                                        {
+                                            SaveChoosen = true;
+                                        }
+                                    }
 
-                                    //РАБОТАЕТ НО ДОДЕЛАТЬ
-                                    //if (SaveChoosen == false)
-                                    //{
-                                    //    for (int i = 0; i < 81; i++)
-                                    //    {
+                                        //РАБОТАЕТ НО ДОДЕЛАТЬ
+                                        //if (SaveChoosen == false)
+                                        //{
+                                        //    for (int i = 0; i < 81; i++)
+                                        //    {
 
-                                    //        m[i] = Convert.ToInt32(gigi[i].ToString());
-                                    //        n[i] = Convert.ToInt32(prov[i].ToString());
+                                        //        m[i] = Convert.ToInt32(gigi[i].ToString());
+                                        //        n[i] = Convert.ToInt32(prov[i].ToString());
 
-                                    //        if (gigi[i] == '0') { Game.zero++; }
-                                    //        if (m[i] != 0) if (m[i] != n[i])
-                                    //            {
-                                    //                SaveChoosen = true;
-                                    //                //MessageBox.Show(NoMistStep.ToString());
-                                    //                break;
-                                    //            }
+                                        //        if (gigi[i] == '0') { Game.zero++; }
+                                        //        if (m[i] != 0) if (m[i] != n[i])
+                                        //            {
+                                        //                SaveChoosen = true;
+                                        //                //MessageBox.Show(NoMistStep.ToString());
+                                        //                break;
+                                        //            }
 
 
 
-                                    //    }
-                                    //}
+                                        //    }
+                                        //}
 
 
                                         if (Game.mist > Game.mistMax || Game.mist < 0 || Game.mist == Game.mistMax || Game.mistMax >= 10000 || Game.mistMax <= 0 || localzero <= 0 || localzero >= 81 || localzero != Game.zero || Game.zero == 0)
@@ -1010,6 +1047,7 @@ namespace Sudo2
                     case bool _ when GoGameBt.IsVisible && GoGameBt.IsEnabled:
                         //MessageBox.Show("lala1");
                          name = "GoGameBt";
+                        
                         ClickOrBut(name);
 
                         break;
@@ -1069,6 +1107,404 @@ namespace Sudo2
                     MainWindow.CurrentInstance.RBHar.IsChecked = false;
                     MainWindow.CurrentInstance.RBFree.IsChecked = false;
                     break;
+            }
+        }
+         void display() 
+        {
+            quan.Document.Blocks.Clear();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(new Run("      Правила игры\r\n\r\n")
+            {
+                FontSize = 30,
+                Foreground = Brushes.Yellow,
+                
+            });
+            paragraph.Inlines.Add(new Run("Поле судоку ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("- 9 квадратов 3 на 3, которые образуют квадрат 9 на 9.\r\rВ маленьком квадрате ниходятся числа ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            //paragraph.Inlines.Add(new Run("В каждой строке и столбце так же находятся числа от ")
+            //{
+            //    FontSize = 19,
+            //    Foreground = Brushes.White,
+
+            //});
+            paragraph.Inlines.Add(new Run("от 1 до 9 ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("включительно.\r\rВ каждой строке и столбце так же находятся числа ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("от 1 до 9 ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("включительно.\r\rВ зависимости от сложности игры на поле рандомно числа заменяются на ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("пустые клетки.\r\rЦель игры ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("- заменить пустые клетки подходящими числами.\r\n\r\n")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run(" Особенности меню\r\n\r\n")
+            {
+                FontSize = 30,
+                Foreground = Brushes.Yellow,
+
+            });
+
+            paragraph.Inlines.Add(new Run("Для начала ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("новой игры ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+
+            paragraph.Inlines.Add(new Run("нужно выбрать сложность.\r\r")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("В игре есть 3 основных режима сложности:\r\r")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("Легко\r\r")
+            {
+                FontSize = 21,
+                Foreground = Brushes.LightGreen,
+
+            });
+         
+            paragraph.Inlines.Add(new Run("В игре на этой сложности игровое поле на ~ ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+            });
+            paragraph.Inlines.Add(new Run("61% ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("пустое, можно совершить ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("5 ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+
+            paragraph.Inlines.Add(new Run("ошибок.\r\r")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+
+            paragraph.Inlines.Add(new Run("Трудно\r\r")
+            {
+                FontSize = 21,
+                Foreground = Brushes.Yellow,
+
+            });
+
+            paragraph.Inlines.Add(new Run("В игре на этой сложности игровое поле на ~ ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+            });
+            paragraph.Inlines.Add(new Run("72% ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("пустое, можно совершить ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("3 ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+
+            paragraph.Inlines.Add(new Run("ошибки.\r\r")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+
+
+            paragraph.Inlines.Add(new Run("Тяжело\r\r")
+            {
+                FontSize = 21,
+                Foreground = Brushes.Orange,
+
+            });
+
+            paragraph.Inlines.Add(new Run("В игре на этой сложности игровое поле на ~ ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+            });
+            paragraph.Inlines.Add(new Run("78% ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("пустое, можно совершить ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("1 ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+
+            paragraph.Inlines.Add(new Run("ошибку.\r\r")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+
+            paragraph.Inlines.Add(new Run("Есть и дополнительный режим:\r\r")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("Свободно\r\r")
+            {
+                FontSize = 21,
+                Foreground = Brushes.BlueViolet,
+
+            });
+            paragraph.Inlines.Add(new Run("Он позволяет самостоятельно настроить количество пустых клеток в поле ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+            paragraph.Inlines.Add(new Run("\"Zeros\" ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("и максимальное количество ошибок в поле ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+            paragraph.Inlines.Add(new Run("\"Mistakes\"")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+
+            paragraph.Inlines.Add(new Run(".\r\rДля загрузки сохранения нужно выбрать сохранение из доступных.\r\rВ игре присутствует функция ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+
+            paragraph.Inlines.Add(new Run("автосохранения")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".\r\rОна сохраняет игровое поле после ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("каждого хода")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".\r\rПри окончании игры в сохранении ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("последний ход не записывается.\r\n\r\n")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run("  Особенности игры\r\n\r\n")
+            {
+                FontSize = 30,
+                Foreground = Brushes.Yellow,
+
+            });
+
+            paragraph.Inlines.Add(new Run("Для выбора клетки нужно использовать ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+            paragraph.Inlines.Add(new Run("пкм")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+
+            paragraph.Inlines.Add(new Run(".\r\rКлетку можно заполнить нажатием на клавишу ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("от 1 до 9 ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".\r\rТак же можно использовать ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+            paragraph.Inlines.Add(new Run("боковую панель")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".\r\rДля сохранения нужно нажать кнопку ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("\"сохранить\"")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".\r\rДалее в появившемся поле ввести ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("название сохранения")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".\r\rПосле повторно нажать кнопку ")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+            paragraph.Inlines.Add(new Run("\"сохранить\"")
+            {
+                FontSize = 19,
+                Foreground = Brushes.LightBlue,
+
+            });
+            paragraph.Inlines.Add(new Run(".")
+            {
+                FontSize = 19,
+                Foreground = Brushes.White,
+
+            });
+
+            quan.Document.Blocks.Add(paragraph);
+
+        }
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange < 0) // Прокрутка вниз
+            {
+                if (e.VerticalOffset + e.ViewportHeight <= e.ExtentHeight & quan.IsVisible == true)
+                {
+                    // Если достигнут конец, делаем кнопку видимой
+                    //MessageBox.Show("pisa");
+                    /*HpOutBt.Visibility = Visibility.Collapsed; */
+                    HpOutBt.Visibility = Visibility.Visible;
+                }
+                else { /*HpOutBt.Visibility = Visibility.Collapsed; *//*HpOutBt.Visibility = Visibility.Visible;*/ }
             }
         }
     }
