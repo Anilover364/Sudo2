@@ -9,7 +9,7 @@ namespace Sudo2
 {
     internal class MapGener
     {
-        // Returns false if given 3x3 block contains num
+        // Возвращает значение false, если заданный блок размером 3x3 содержит num
         static bool unUsedInBox(int[,] grid, int rowStart,
                                 int colStart, int num)
         {
@@ -27,7 +27,7 @@ namespace Sudo2
             return true;
         }
 
-        // Fill a 3x3 matrix
+        // Заполните матрицу размером 3х3
         static void fillBox(int[,] grid, int row, int col)
         {
             Random rand = new Random();
@@ -45,7 +45,7 @@ namespace Sudo2
             }
         }
 
-        // Check if it's safe to put num in row i
+        // Проверяем, безопасно ли помещать num в строку i
         static bool unUsedInRow(int[,] grid, int i, int num)
         {
             for (int j = 0; j < 9; j++)
@@ -58,7 +58,7 @@ namespace Sudo2
             return true;
         }
 
-        // Check if it's safe to put num in column j
+        // Проверяем, безопасно ли указывать число в столбце j
         static bool unUsedInCol(int[,] grid, int j, int num)
         {
             for (int i = 0; i < 9; i++)
@@ -72,7 +72,7 @@ namespace Sudo2
             return true;
         }
 
-        // Check if safe to put in cell
+        // Проверяем, безопасно ли помещать в камеру
         static bool checkIfSafe(int[,] grid, int i, int j,
                                 int num)
         {
@@ -81,7 +81,7 @@ namespace Sudo2
                 && unUsedInBox(grid, i - i % 3, j - j % 3, num);
         }
 
-        // Fill the diagonal 3x3 matrices
+        //  Заполните диагональные матрицы размером 3х3
         static void fillDiagonal(int[,] grid)
         {
             for (int i = 0; i < 9; i += 3)
@@ -90,7 +90,7 @@ namespace Sudo2
             }
         }
 
-        // Fill remaining blocks
+        //Заполните оставшиеся блоки
         static bool fillRemaining(int[,] grid, int i, int j)
         {
             if (j >= 9 && i < 8)
@@ -144,7 +144,7 @@ namespace Sudo2
             return false;
         }
 
-        // Remove K digits randomly
+        // Рандомно задаем массив в соответствии со сложностью
         static void removeKDigits(int[,] grid)
         {
             
@@ -181,7 +181,7 @@ namespace Sudo2
             }
         }
 
-        // Generate a Sudoku grid with K empty cells
+        // Создаем сетку 
         public static int[,] sudokuGenerator(int k)
         {
             int[,] grid = new int[9, 9];

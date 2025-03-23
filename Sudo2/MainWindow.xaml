@@ -147,7 +147,10 @@
             </Grid>
         </GroupBox>
 
+        
         <!--Меню выбора сохранения-->
+        
+        
         <GroupBox x:Name="GBResm" Background="Black" Visibility="Collapsed" BorderThickness="0" Margin="-2,-2,-2,-2">
             <Grid Height="480" >
                 <Grid.RowDefinitions>
@@ -173,6 +176,11 @@
                 <ListBox Grid.Row="1"   FontSize="20"   x:Name="LBSave" Background="Black" Foreground="Red" BorderBrush="Red" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="LBSave_SelectionChanged"  VirtualizingStackPanel.IsVirtualizing="True"/>
             </Grid>
         </GroupBox>
+        
+        
+        <!--Панель меню-->
+        
+        
         <Menu Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
             <MenuItem  Header="Настройки" Foreground="White" >
                 <MenuItem x:Name="MenuAutoSave"  Header="Автосохранение" Foreground="Black" IsChecked="False" ToolTip="Автосохранение игры" Click="check"/>

@@ -27,26 +27,26 @@ namespace Sudo2
 {
     public partial class MainWindow : Window
     {
-        //MainWindow secondWindow = new MainWindow();
+       //задаем ссылки
         private ContextMenu secondWindow;
         public static MainWindow CurrentInstance { get; private set; }
         public MainWindow()
         {
             InitializeComponent();
-            //NgBt.Focusable = false;
-
-            CurrentInstance = this; // Сохраняем ссылку на текущий экземпляр
+            // Сохраняем ссылку на текущий экземпляр
+            CurrentInstance = this; 
             //Добавляем контекстное окно и задаем параметры
             secondWindow = new ContextMenu();
 
             secondWindow.Left = SystemParameters.PrimaryScreenWidth/2+this.Width/2;
             secondWindow.Top = 0;
             secondWindow.Top= SystemParameters.PrimaryScreenHeight/2-this.Height/2;
-            //проверяем наличие сохранений
+            //проверяем наличие режима сохранения
             if (DataFunc.AutoSave == true)
             {
                 MenuAutoSave.IsChecked = true;
             }
+            //если нужных директорий нет, то создаем ее
             CheckSaveSpace(LBAdd);
             var PathSavesName = Directory.GetCurrentDirectory();
             PathSavesName += $@"\SudoData\SavesNameOnly\SavesName.txt";
@@ -61,7 +61,7 @@ namespace Sudo2
                 }
 
             }
-            if (Game.FileError == true) 
+            if (DataFunc.FileError == true) 
             {
                 if (!secondWindow.IsVisible)
                 {
@@ -69,7 +69,7 @@ namespace Sudo2
                     secondWindow.Show();
                     Delay();
                 }
-                Game.FileError =false;
+                DataFunc.FileError =false;
             }
             //TBZeros.Text = "Количество нулей";
             display();
@@ -83,6 +83,7 @@ namespace Sudo2
             string name;
             switch (Bt.Name)
                 {
+                //новая игра
                 case "NgBt":
                     GBComp.Visibility = Visibility.Visible;
                     GoGameBt.IsEnabled = false;
@@ -93,6 +94,7 @@ namespace Sudo2
                     TBZeros.Text = "Zeros";
                     TBMistakes.Text = "Mistakes";
                     break;
+                    //меню сохранений
                 case "RsBt":
                     GBResm.Visibility = Visibility;
                     RsGoGameBt.IsEnabled=false;
@@ -100,50 +102,22 @@ namespace Sudo2
                     VBRsOut.Margin = new Thickness(15, 0, 170, 55); VBRsGoGame.Margin = new Thickness(170, 0, 15, 55); VBItDel.Visibility = Visibility.Collapsed;
                     LBAdd=true;
                     CheckSaveSpace(LBAdd);
-                    //var PathSavesName = Directory.GetCurrentDirectory();
-                    //PathSavesName += $@"\SudoData\SavesNameOnly\SavesName.txt";
-                    //var TempPathSavesName = Directory.GetCurrentDirectory();
-                    //TempPathSavesName += $@"\SudoData\SavesNameOnly\TempSavesName.txt";
-                    //bool Space=false;
-                    //StreamReader SavesNameOUT = new StreamReader(PathSavesName);
-                    //StreamWriter TempSaveName = new StreamWriter(TempPathSavesName);
-                    //string line;
-
-                    //while ((line = SavesNameOUT.ReadLine()) != null)
-                    //{
-                    //    if (!string.IsNullOrWhiteSpace(line))
-                    //    {
-                    //        LBSave.Items.Add(line);
-                    //        TempSaveName.WriteLine(line);
-                    //    }
-                    //    else { Space = true; }
-                    //    //else 
-                    //    //{
-                    //    //    StreamWriter SavesNameON=new StreamWriter(PathSavesName,true);
-                            
-                    //    //}
-                    //}
-                    //        TempSaveName.Close();
-                    //SavesNameOUT.Close();
-                    //if (Space == true)
-                    //{
-                    //    File.Delete(PathSavesName);
-                    //    File.Move(TempPathSavesName, PathSavesName);
-                    //}
-                    //else { File.Delete(TempPathSavesName); }
                     break;
+                    //помощь
                 case "HpBt":
                     GBHelp.Visibility = Visibility.Visible;
                     GBMenu.Visibility = Visibility.Collapsed;
                     break;
+                    //выйти из помощи
                 case "HpOutBt":
                     GBHelp.Visibility = Visibility.Collapsed;
                     GBMenu.Visibility = Visibility.Visible;
                     scroll.ScrollToHome();
                     break;
+                    //выйти из новой игры
                 case "PCOutBt":
                     name = "PCOutBt";
-                    ClickOrBut(name);
+                    ClickOrBut(name); /*это всего лишь проверка ради хайпа*/
                     //GBComp.Visibility = Visibility.Collapsed;
                     //GBMenu.Visibility = Visibility.Visible;
                     //RBLig.IsChecked = false;
@@ -151,6 +125,7 @@ namespace Sudo2
                     //RBHar.IsChecked = false;
                     //RBFree.IsChecked = false;
                     break ;
+                    //старт
                 case "GoGameBt":
                      name = "GoGameBt";
                     ClickOrBut(name);
@@ -176,15 +151,17 @@ namespace Sudo2
                     //}
                     //GoGameBt.IsEnabled = false;
                     break;
+                    //выйти из меню сохранений
                 case "RsOutBt":
                     GBResm.Visibility = Visibility.Collapsed;
                     GBMenu.Visibility = Visibility.Visible;
                     LBSave.Items.Clear();
-                    //testik.Text=LBSave.SelectedIndex.ToString();
-
                     break;
+                    //загрузить сохранение
                 case "RsGoGameBt":
+
                     GBMenu.Visibility = Visibility.Visible;
+                   DataFunc.CheckDirectory();
 
                     if (ChItem != null)
                     {
@@ -196,352 +173,300 @@ namespace Sudo2
                             //MessageBox.Show("piska");
                             var PathSave = Directory.GetCurrentDirectory();
                             PathSave += $@"\SudoData\Saves\{Game.ChSave}.txt";
+
                             if (File.Exists(PathSave))
                             {
-                                StreamReader test = new StreamReader(PathSave);
-                                string line1;
-                                int localzero = 0;
-                                Game.zero = 0;
-                                double localcheck = 0;
-                               bool SaveChoosen=false;
-                            
-                          
-                            //    int LineMap = 0;
-                            //    int LineProv = 10;
-                            //int LineMist = 20;
-                            //    int LineMistMax = 21;
-                            //    int LineZero = 22;
-                                
-                                int[,] m = new int[9,9];
-                                int[,] n = new int[9,9];
-                                string jaja;
-                                gigi = "";
-                                prov = "";
+                                DataFunc.IsReadOnly(PathSave);
+                                if (DataFunc.ReadOnly == false)
+                                {
+                                    StreamReader test = new StreamReader(PathSave);
+                                    string line1;
+                                    int localzero = 0;
+                                    Game.zero = 0;
+                                    double localcheck = 0;
+                                    bool SaveChoosen = false;
+                                    int[,] m = new int[9, 9];
+                                    int[,] n = new int[9, 9];
+                                    string jaja;
+                                    gigi = "";
+                                    prov = "";
+                                    string lineContentMap = File.ReadLines(PathSave).ElementAtOrDefault(0);
+                                    string lineContentProv = File.ReadLines(PathSave).ElementAtOrDefault(10);
+                                    string lineContentMist = File.ReadLines(PathSave).ElementAtOrDefault(20);
+                                    //if(lineContentMist)
+                                    if (!string.IsNullOrWhiteSpace(lineContentMist))
+                                    {
+                                        lineContentMist = lineContentMist.Substring(0, 5);
+                                    }
+                                    //else { SaveChoosen = true; }
+                                    string lineContentMMax = File.ReadLines(PathSave).ElementAtOrDefault(21);
+                                    if (!string.IsNullOrWhiteSpace(lineContentMMax))
+                                    {
+                                        lineContentMMax = lineContentMMax.Substring(0, 5);
+                                    }
+                                    string lineContentzero = File.ReadLines(PathSave).ElementAtOrDefault(22);
+                                    if (!string.IsNullOrWhiteSpace(lineContentzero))
+                                    {
+                                        lineContentzero = lineContentzero.Substring(0, 5);
+                                    }
+                                    string lineContentcheck = File.ReadLines(PathSave).ElementAtOrDefault(23);
+                                    if (!string.IsNullOrWhiteSpace(lineContentcheck))
+                                    {
+                                        lineContentcheck = lineContentcheck.Substring(0, 6);
+                                    }
+                                    if (lineContentMap != "карта" || lineContentProv != "проверка" || lineContentMist != "mist=" || lineContentMMax != "MMax=" || lineContentzero != "zero=" || lineContentcheck != "check=")
+                                    {
+                                        SaveChoosen = true;
+                                    }
+                                    else
+                                    {
+                                        while ((line1 = test.ReadLine()) != null)
+                                        {
+                                            if (line1 == "карта")
+                                            {
+                                                for (int i = 0; i < 9; i++)
+                                                {
 
+                                                    jaja = test.ReadLine();
 
-                                //int t = 0;
+                                                    gigi += jaja;
+                                                }
+                                            }
+                                            if (line1 == "проверка")
+                                            {
+                                                for (int i = 0; i < 9; i++)
+                                                {
+                                                    jaja = test.ReadLine();
+                                                    prov += jaja;
 
-                                string lineContentMap = File.ReadLines(PathSave).ElementAtOrDefault(0);
-                                string lineContentProv = File.ReadLines(PathSave).ElementAtOrDefault(10);
-                                string lineContentMist = File.ReadLines(PathSave).ElementAtOrDefault(20);
-                                //if(lineContentMist)
-                                if (!string.IsNullOrWhiteSpace(lineContentMist))
-                                {
-                                    lineContentMist = lineContentMist.Substring(0, 5);
-                                }
-                                //else { SaveChoosen = true; }
-                                string lineContentMMax = File.ReadLines(PathSave).ElementAtOrDefault(21);
-                                if (!string.IsNullOrWhiteSpace(lineContentMMax))
-                                {
-                                    lineContentMMax = lineContentMMax.Substring(0, 5);
-                                }
-                                string lineContentzero = File.ReadLines(PathSave).ElementAtOrDefault(22);
-                                if (!string.IsNullOrWhiteSpace(lineContentzero))
-                                {
-                                    lineContentzero = lineContentzero.Substring(0, 5);
-                                }
-                                string lineContentcheck = File.ReadLines(PathSave).ElementAtOrDefault(23);
-                                if (!string.IsNullOrWhiteSpace(lineContentcheck))
-                                {
-                                    lineContentcheck = lineContentcheck.Substring(0, 6);
-                                }
-                                if (lineContentMap != "карта" || lineContentProv != "проверка" || lineContentMist != "mist=" || lineContentMMax != "MMax=" || lineContentzero != "zero="|| lineContentcheck!="check=")
-                                {
-                                    //   Game.Saved = true;
-                                    //   new Game().Show();
-                                    //this.Close();
-                                    SaveChoosen = true;
-                                    //MessageBox.Show(lineContentMMax);
+                                                }
+                                            }
+                                            if (line1.Substring(0, 4) == "mist")
+                                            {
+                                                jaja = line1.Substring(5);
+                                                //if(int.TryParse jaja,out q){ }
+                                                if (!int.TryParse(jaja, out int q))
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                    //jaja = "666666";
+                                                }
+                                                //context.Text = jaja;
+                                                if (jaja.Length >= 6)
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                }
+                                                Game.mist = Convert.ToInt32(jaja);
+
+                                            }
+                                            if (line1.Substring(0, 4) == "MMax")
+                                            {
+                                                jaja = line1.Substring(5);
+                                                if (!int.TryParse(jaja, out int q))
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                }
+                                                //context.Text = jaja;
+                                                if (jaja.Length >= 6)
+                                                {
+                                                    SaveChoosen = true;
+                                                    //MessageBox.Show("asda");
+                                                    break;
+                                                }
+                                                Game.mistMax = Convert.ToInt32(jaja);
+
+                                            }
+                                            if (line1.Substring(0, 4) == "zero")
+                                            {
+                                                jaja = line1.Substring(5);
+                                                if (!int.TryParse(jaja, out int q))
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                }
+                                                //context.Text = jaja;
+                                                if (jaja.Length >= 3)
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                }
+                                                localzero = Convert.ToInt32(jaja);
+
+                                            }
+                                            if (line1.Substring(0, 5) == "check")
+                                            {
+                                                jaja = line1.Substring(6);
+                                                if (!double.TryParse(jaja, out double q))
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                }
+                                                //context.Text = jaja;
+                                                if (jaja.Length >= 8)
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                }
+                                                localcheck = Convert.ToDouble(jaja);
+
+                                            }
+                                        }
+                                        //РАБОТАЕТ
+                                        //int.TryParse(gigi, out int cc);
+                                        //int.TryParse(prov, out int ccc);
+                                        //if (cc!=0&ccc!=0)
+                                        //{
+                                        if (SaveChoosen == false)
+                                        {
+                                            foreach (char c in gigi)
+                                            {
+
+                                                //int p = Convert.ToInt32(c.ToString());
+                                                if (!int.TryParse(c.ToString(), out int p))
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                    //MessageBox.Show("PISA");
+
+                                                }
+                                            }
+                                            foreach (char c in prov)
+                                            {
+                                                int.TryParse(c.ToString(), out int p);
+                                                //int p = Convert.ToInt32(c.ToString());
+                                                if (p == 0)
+                                                {
+                                                    SaveChoosen = true;
+                                                    break;
+                                                    //MessageBox.Show("PISA");
+
+                                                }
+                                            }
+                                        }
+
+                                        if (SaveChoosen == false)
+                                        {
+                                            int h = 0;
+                                            int row = 0;
+                                            int col = 0;
+                                            for (int i = 0; i < 9; i++)
+                                            {
+                                                for (int j = 0; j < 9; j++)
+                                                {
+                                                    m[i, j] = Convert.ToInt32(gigi[h].ToString());
+                                                    n[i, j] = Convert.ToInt32(prov[h].ToString());
+
+                                                    if (gigi[h] == '0') { Game.zero++; }
+                                                    if (m[i, j] != 0) if (m[i, j] != n[i, j])
+                                                        {
+                                                            SaveChoosen = true;
+                                                            break;
+                                                        }
+                                                    row += n[i, j];
+                                                    if ((h + 1) % 9 == 0)
+                                                    {
+                                                        if (row != 45)
+                                                        {
+                                                            SaveChoosen = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    h++;
+                                                }
+                                                row = 0;
+                                            }
+                                            h = 0;
+                                            for (int i = 0; i < 9; i++)
+                                            {
+                                                for (int j = 0; j < 9; j++)
+                                                {
+                                                    col += n[j, i];
+                                                    if ((h + 1) % 9 == 0)
+                                                    {
+                                                        if (col != 45)
+                                                        {
+                                                            SaveChoosen = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    h++;
+                                                }
+                                                col = 0;
+                                            }
+                                        }
+                                        if (SaveChoosen == false)
+                                        {
+                                            int first = n[0, 0] + n[0, 1] + n[1, 0] + n[1, 1];
+                                            int sec = n[7, 7] + n[7, 8] + n[8, 7] + n[8, 8];
+                                            double check = (Convert.ToDouble(first) + Convert.ToDouble(Game.mist)) / (Convert.ToDouble(sec) + Convert.ToDouble(Game.mistMax));
+                                            check = Math.Round(check, 5);
+                                            if (localcheck != check)
+                                            {
+                                                SaveChoosen = true;
+                                            }
+                                        }
+                                        if (Game.mist > Game.mistMax || Game.mist < 0 || Game.mist == Game.mistMax || Game.mistMax >= 10000 || Game.mistMax <= 0 || localzero <= 0 || localzero >= 81 || localzero != Game.zero || Game.zero == 0)
+                                        {
+                                            SaveChoosen = true;
+                                        }
+                                        test.Close();
+                                    }
+                                    if (SaveChoosen == false)
+                                    {
+                                        DataFunc.Saved = true;
+                                        new Game().Show();
+                                        Game.CurrentInstance.Title = Game.ChSave;
+                                        this.Close();
+                                    }
+                                    else
+                                    {
+                                        if (!secondWindow.IsVisible)
+                                        {
+                                            DataFunc.ERROR = 6;
+                                            secondWindow.Show();
+                                            Delay();
+                                        }
+                                    }
 
                                 }
                                 else
                                 {
-                                    while ((line1 = test.ReadLine()) != null)
-                                    {
-                                        if (line1 == "карта")
-                                        {
-                                            for (int i = 0; i < 9; i++)
-                                            {
-
-                                                jaja = test.ReadLine();
-                                                //int.TryParse(jaja, out int cc);
-                                                //if(cc)
-                                                gigi += jaja;
-                                            }
-                                        }
-                                        if (line1 == "проверка")
-                                        {
-                                            for (int i = 0; i < 9; i++)
-                                            {
-                                                jaja = test.ReadLine();
-                                                prov += jaja;
-
-                                            }
-                                        }
-                                        if (line1.Substring(0, 4) == "mist")
-                                        {
-                                            jaja = line1.Substring(5);
-                                            //if(int.TryParse jaja,out q){ }
-                                            if (!int.TryParse(jaja, out int q))
-                                            {
-                                                SaveChoosen=true;
-                                                break;
-                                                //jaja = "666666";
-                                            }
-                                            //context.Text = jaja;
-                                            if (jaja.Length >= 6)
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                            }
-                                            Game.mist = Convert.ToInt32(jaja);
-
-                                        }
-                                        if (line1.Substring(0, 4) == "MMax")
-                                        {
-                                            jaja = line1.Substring(5);
-                                            if (!int.TryParse(jaja, out int q))
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                            }
-                                            //context.Text = jaja;
-                                            if (jaja.Length >= 6)
-                                            {
-                                                SaveChoosen = true;
-                                                //MessageBox.Show("asda");
-                                                break;
-                                            }
-                                            Game.mistMax = Convert.ToInt32(jaja);
-
-                                        }
-                                        if (line1.Substring(0, 4) == "zero")
-                                        {
-                                            jaja = line1.Substring(5);
-                                            if (!int.TryParse(jaja, out int q))
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                            }
-                                            //context.Text = jaja;
-                                            if (jaja.Length >= 3)
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                            }
-                                            localzero = Convert.ToInt32(jaja);
-
-                                        }
-                                        if (line1.Substring(0, 5) == "check")
-                                        {
-                                            jaja = line1.Substring(6);
-                                            if (!double.TryParse(jaja, out double q))
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                            }
-                                            //context.Text = jaja;
-                                            if (jaja.Length >= 8)
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                            }
-                                            localcheck = Convert.ToDouble(jaja);
-
-                                        }
-                                    }
-                                    //РАБОТАЕТ
-                                    //int.TryParse(gigi, out int cc);
-                                    //int.TryParse(prov, out int ccc);
-                                    //if (cc!=0&ccc!=0)
-                                    //{
-                                    if (SaveChoosen == false)
-                                    {
-                                        foreach (char c in gigi)
-                                        {
-
-                                            //int p = Convert.ToInt32(c.ToString());
-                                            if (!int.TryParse(c.ToString(), out int p))
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                                //MessageBox.Show("PISA");
-
-                                            }
-                                        }
-                                        foreach (char c in prov)
-                                        {
-                                            int.TryParse(c.ToString(), out int p);
-                                            //int p = Convert.ToInt32(c.ToString());
-                                            if (p == 0)
-                                            {
-                                                SaveChoosen = true;
-                                                break;
-                                                //MessageBox.Show("PISA");
-
-                                            }
-                                        }
-                                    }
-
-                                    if (SaveChoosen == false)
-                                    {
-                                        int h = 0;
-                                        int row = 0;
-                                        int col = 0;
-                                        for (int i = 0; i < 9; i++)
-                                        {
-                                            for (int j = 0; j < 9; j++)
-                                            {
-
-                                                m[i,j] = Convert.ToInt32(gigi[h].ToString());
-                                                n[i,j] = Convert.ToInt32(prov[h].ToString());
-
-                                                if (gigi[h] == '0') { Game.zero++; }
-                                                if (m[i,j] != 0) if (m[i,j] != n[i, j])
-                                                    {
-                                                        SaveChoosen = true;
-                                                        //MessageBox.Show(NoMistStep.ToString());
-                                                        break;
-                                                    }
-                                                row += n[i, j];
-                                                if ((h + 1) % 9 == 0) 
-                                                {
-                                                    if (row != 45) 
-                                                    {
-
-                                                        SaveChoosen = true;
-                                                        break;
-                                                    }
-                                                }
-                                                h++;
-                                            }
-                                                row = 0;
-
-                                        }
-                                        h = 0;
-                                        for (int i = 0; i < 9; i++)
-                                        {
-                                            for (int j = 0; j < 9; j++)
-                                            {
-
-                                                //MessageBox.Show((n[j,i]).ToString());
-                                                col += n[j, i];
-                                                if ((h + 1) % 9 == 0)
-                                                {
-                                                    if (col != 45)
-                                                    {
-                                                        //MessageBox.Show((n[j, i]).ToString());
-                                                        SaveChoosen = true;
-                                                        break;
-                                                    }
-                                                }
-                                                h++;
-                                            }
-                                            col = 0;
-                                            }
-                                        }
-                                    if (SaveChoosen == false)
-                                    {
-                                        int first = n[0, 0] + n[0, 1] + n[1, 0] + n[1, 1];
-                                        int sec = n[7, 7] + n[7, 8] + n[8, 7] + n[8, 8];
-                                        double check = (Convert.ToDouble(first) + Convert.ToDouble(Game.mist)) / Convert.ToDouble(sec);
-                                        check = Math.Round(check, 5);
-                                        if (localcheck != check) 
-                                        {
-                                            SaveChoosen = true;
-                                        }
-                                    }
-
-                                        //РАБОТАЕТ НО ДОДЕЛАТЬ
-                                        //if (SaveChoosen == false)
-                                        //{
-                                        //    for (int i = 0; i < 81; i++)
-                                        //    {
-
-                                        //        m[i] = Convert.ToInt32(gigi[i].ToString());
-                                        //        n[i] = Convert.ToInt32(prov[i].ToString());
-
-                                        //        if (gigi[i] == '0') { Game.zero++; }
-                                        //        if (m[i] != 0) if (m[i] != n[i])
-                                        //            {
-                                        //                SaveChoosen = true;
-                                        //                //MessageBox.Show(NoMistStep.ToString());
-                                        //                break;
-                                        //            }
-
-
-
-                                        //    }
-                                        //}
-
-
-                                        if (Game.mist > Game.mistMax || Game.mist < 0 || Game.mist == Game.mistMax || Game.mistMax >= 10000 || Game.mistMax <= 0 || localzero <= 0 || localzero >= 81 || localzero != Game.zero || Game.zero == 0)
-                                        {
-                                            SaveChoosen = true;
-                                            //MessageBox.Show(localzero.ToString());
-
-                                        }
-                                    //} else { SaveChoosen = true; }
-                                    
-                                    test.Close();
-
-                                }
-                                if (SaveChoosen == false)
-                                {
-                                    Game.Saved = true;
-                                    new Game().Show();
-                                    Game.CurrentInstance.Title = Game.ChSave;
-                                    this.Close();
-
-                                }
-                                else 
-                                {
                                     if (!secondWindow.IsVisible)
                                     {
-                                        DataFunc.ERROR = 6;
+                                        DataFunc.ERROR = 10;
                                         secondWindow.Show();
                                         Delay();
                                     }
                                 }
-
-
                             }
                             else
                             {
-                                //RsBt.IsEnabled = true;
                                 if (!secondWindow.IsVisible)
                                 {
                                     DataFunc.ERROR = 2;
                                     secondWindow.Show();
                                     Delay();
                                 }
-                                //else if (secondWindow.IsVisible & secondWindow.AutoSave.IsVisible == true) 
-                                //{
-                                //this.Close();
-                                //}
                             }
                         }
                         else 
                         {
-                            //MessageBox.Show("piska");
                             if (!secondWindow.IsVisible)
                             {
                                 DataFunc.ERROR = 5;
                                 secondWindow.Show();
-
                                 Delay();
                             }
                         }
                     }
                     break;
+                    //удалить сохранение
                 case "ItDelBt":
-                    //LBSave.SelectedItems.Clear();
-                   
                     if (LBSave.Items.Count != 0)
                     {
-                        //var ChItem = LBSave.SelectedItem;
                         string Wine;
-
                         var PathSavesNameDel = Directory.GetCurrentDirectory();
                         PathSavesNameDel += $@"\SudoData\SavesNameOnly\SavesName.txt";
                         var TempPathSavesNameDel = Directory.GetCurrentDirectory();
@@ -567,13 +492,7 @@ namespace Sudo2
                         File.Delete(PathSavesNameDel);
                         File.Move(TempPathSavesNameDel, PathSavesNameDel);
                         if (ErrorChar == false)
-                            //if (File.OpenRead(PathSave) != null && File.OpenText(PathSave).BaseStream.CanRead)
-                            //{
-                            //    MessageBox.Show("lala");
                                 File.Delete(PathSave);
-
-                            //}
-                            //else { MessageBox.Show("lala"); }
                         LBSave.Items.RemoveAt(LBSave.SelectedIndex);
                         if (!secondWindow.IsVisible)
                         {
@@ -583,7 +502,6 @@ namespace Sudo2
                         }
                     }
                     else MessageBox.Show("lox");
-                    //this.Close();
                     break;
                    
 
@@ -591,44 +509,13 @@ namespace Sudo2
             }
             
         }
-        public static string gigi = "";
-        public static string prov = "";
-        bool LBAdd=false;
+        public static string gigi = ""; /*для записи нашей карты*/
+        public static string prov = ""; /*для записи нашей базы*/
+        bool LBAdd=false; /*для директорий*/
+        //читаем названия сохранений
         public static void CheckSaveSpace(bool LocLBAdd) 
         {
             DataFunc.CheckDirectory();
-            //var SudoData = Directory.GetCurrentDirectory();
-            //SudoData += $@"\SudoData";
-            //var PathSave = Directory.GetCurrentDirectory();
-            //PathSave += $@"\SudoData\Saves";
-            //var PathSavesName = Directory.GetCurrentDirectory();
-            //PathSavesName += $@"\SudoData\SavesNameOnly\SavesName.txt";
-            //var PathSavesNameDir = Directory.GetCurrentDirectory();
-            //PathSavesNameDir += $@"\SudoData\SavesNameOnly";
-            //if (!File.Exists(PathSave))
-            //{
-            //    // Если файл не существует, создаем его
-            //    Directory.CreateDirectory(PathSave);
-            //    //MessageBox.Show("lala");
-            //}
-            //if (!File.Exists(SudoData))
-            //{
-            //    // Если файл не существует, создаем его
-            //    Directory.CreateDirectory(SudoData);
-            //    //MessageBox.Show("lala");
-            //}
-            //if (!File.Exists(PathSavesNameDir))
-            //{
-            //    // Если файл не существует, создаем его
-            //    Directory.CreateDirectory(PathSavesNameDir);
-            //    //MessageBox.Show("lala");
-            //}
-            //if (!File.Exists(PathSavesName))
-            //{
-            //    // Если файл не существует, создаем его
-            //    File.Create(PathSavesName).Close();
-            //    //MessageBox.Show("lala");
-            //}
             var PathSavesName = Directory.GetCurrentDirectory();
             PathSavesName += $@"\SudoData\SavesNameOnly\SavesName.txt";
             var TempPathSavesName = Directory.GetCurrentDirectory();
@@ -711,7 +598,7 @@ namespace Sudo2
         }
         //Изменение текста
 
-        public static bool ErrorChar=false;
+        public static bool ErrorChar=false; /*неправильные название*/
         private void LBSave_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             RsGoGameBt.IsEnabled = true;
@@ -740,7 +627,7 @@ namespace Sudo2
                             ErrorChar = true;
                             //MessageBox.Show("piska");
                             break;
-                        } /*доделаааааааааааааааааааааааааааааааать*/
+                        } 
                     }
                 }
             }
@@ -759,7 +646,7 @@ namespace Sudo2
 
             }
         }
-        //мутки с нулями и ошибками
+        //Кдаление первоначального текста
         private void Comp_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var send = sender as TextBox;
@@ -798,7 +685,7 @@ namespace Sudo2
                 }
             }
         }
-
+        //проверка полей свободного реждима
         private void Comp_TextChanged(object sender, TextChangedEventArgs e)
         {
             var send = sender as TextBox;
@@ -814,17 +701,11 @@ namespace Sudo2
                         if (LocalZero == 0 || LocalZero >= 81)
                         {
                             int.TryParse(TBZeros.Text.Substring(TBZeros.Text.Length - 1),out t);
-                            //MessageBox.Show(t.ToString());
                             if (t != 0)
                             {
                                 int.TryParse(TBZeros.Text, out  tt);
                             }
                             TBZeros.Text = TBZeros.Text.Substring(0, TBZeros.Text.Length - 1);
-                            //MessageBox.Show(tt.ToString());
-                            //for (int i = 0; i < TBMistakes.Text.Length; i++)
-                            //{
-                            //    TBZeros.SelectionStart++;
-                            //}
                             TBZeros.CaretIndex = TBZeros.Text.Length;
                             if (TBZeros.Text.Length != 0)
                             {
@@ -883,11 +764,6 @@ namespace Sudo2
                         int.TryParse(TBMistakes.Text, out int LocalMist);
                         if (LocalMist == 0||LocalMist>9999)
                         {
-                            //int y = 0;
-                            //foreach (char ch in TBMistakes.Text) 
-                            //{
-                            //if()
-                            //}
                             int.TryParse(TBMistakes.Text.Substring(TBMistakes.Text.Length - 1), out t);
                             if (t != 0)
                             {
@@ -931,7 +807,6 @@ namespace Sudo2
                                 }
                             }
                         }
-                        //if (Keyboard.Modifiers == ModifierKeys.Control) { TBMistakes.Text = "Mistakes"; }
                         Game.mistMax = LocalMist;
                     }
                     else { Game.mistMax = 0; }
@@ -960,36 +835,12 @@ namespace Sudo2
         //задержка
         public  async void Delay()
         {
-            // ContextMenu secondWindow;
-            //secondWindow = new ContextMenu();
             await Task.Delay(2000);
             secondWindow.Visibility = Visibility.Hidden;
         }
-        // void asa()
-        //{
-        //    if (TBZeros.IsFocused & !TBMistakes.IsFocused & !secondWindow.text.Focusable)
-        //    {
-        //        MessageBox.Show("ljlj");
-        //    }
-        //         else if (TBMistakes.IsFocused & !TBZeros.IsFocused & !secondWindow.text.Focusable)
-        //    {
-        //        MessageBox.Show("12313aaaaaaaaaaaaaaaaaaa");
-        //    }
-        //    else if (secondWindow.text.Focusable & !TBZeros.IsFocused & !TBMistakes.IsFocused)
-        //    {
-        //        MessageBox.Show("12313");
-        //    }
-        //    if (secondWindow.text.Focusable == true)
-        //    {
-        //        //SecWinFoc = true;
-        //        MessageBox.Show("ljlj");
-        //    }
-        //}
+        //задержка 2
         public async void Delay2()
         {
-  
-
-
             secondWindow.AutoSave.Visibility = Visibility.Collapsed;
             await Task.Delay(2000);
             secondWindow.AutoSave.Visibility = Visibility;
@@ -999,11 +850,9 @@ namespace Sudo2
         //привязка контекстного окна к закрытию меню
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //new ContextMenu();
             secondWindow.Close();
-            //MessageBox.Show("ldld");
         }
-
+        //проверка меню автосейв
         private void check(object sender, RoutedEventArgs e)
         {
             if (DataFunc.AutoSave == true)
@@ -1013,7 +862,6 @@ namespace Sudo2
                     secondWindow.AutoSave.Visibility = Visibility.Collapsed;
                     secondWindow.Visibility= Visibility.Hidden;
                 }
-                //MessageBox.Show("1");
                 PCOutBt.Visibility= Visibility.Visible;
                 GoGameBt.Visibility= Visibility.Visible;
                 MenuAutoSave.IsChecked = false;
@@ -1021,18 +869,13 @@ namespace Sudo2
             }
             else 
             {
-                //MessageBox.Show("0");
                 DataFunc.AutoSave = true;
                 MenuAutoSave.IsChecked = true;
             }
         }
-
+        //скрытие контекстного окна при скрытии мейна
         private void Window_StateChanged(object sender, EventArgs e)
         {
-            //if (secondWindow != null)
-            //{
-            //this.Close
-            //}
             secondWindow.WindowState=this.WindowState;
         }
 
@@ -1080,7 +923,7 @@ namespace Sudo2
                 case "GoGameBt":
                     if (DataFunc.AutoSave == false)
                     {
-                        Game.Saved = false;
+                        DataFunc.Saved = false;
                         //GBMenu.Visibility = Visibility.Visible;
                         new Game().Show();
                         MainWindow.CurrentInstance.Close();
@@ -1109,7 +952,8 @@ namespace Sudo2
                     break;
             }
         }
-         void display() 
+        //вывод помощи
+      public void display() 
         {
             quan.Document.Blocks.Clear();
 

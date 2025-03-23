@@ -705,6 +705,10 @@
             </Grid>
         </GroupBox>
         
+        
+        <!--Панель меню-->
+        
+        
         <Menu x:Name="Menu" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
             <MenuItem x:Name="MenuSaveName" Visibility="Collapsed"  Foreground="White" FontSize="15.2"/>
             <MenuItem  Header="Настройки" Foreground="White" FontSize="15.2">

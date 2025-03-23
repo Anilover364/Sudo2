@@ -27,25 +27,21 @@ namespace Sudo2
 
     public partial class Game : Window
     {
-        //private MainWindow MainsecondWindow;
+        //ссылка в Сибирь
         public static Game CurrentInstance { get; private set; }
         public Game()
         {
             InitializeComponent();
+            //подтверждение
             CurrentInstance = this;
-            
-            //Title = Game.ChSave;
-            //MessageBox.Show(Game.ChSave);
-            //подставлем значение массива на игровое поле, заполняем массив для сверки
-            //MainsecondWindow = new MainWindow();
-            truemistMax =true;
+            //проверка на автосейв
             if (DataFunc.AutoSave == true)
             {
                 MenuAutoSave.IsChecked = true;
             }
+            //проверка на режим экрана игры
             if (DataFunc.WinMod == false)
             {
-                //MenuWinStyle.IsChecked = false;
                 DataFunc.WinMod = false;
                 this.WindowStyle = WindowStyle.ThreeDBorderWindow;
                 MenuWinStyle.Header = "Полноэкранный режим";
@@ -64,7 +60,7 @@ namespace Sudo2
                 MenuSaveName.Header = Title;
 
             }
-            if (Saved == false)
+            if (DataFunc.Saved == false)
             {
                 int k = 0;
                 mist = 0;
@@ -85,38 +81,15 @@ namespace Sudo2
                     }
                 }
             }
-            //ТУТ В САМОМ КОНЦЕ РАБОТЫ ПЕРЕДЕЛАТЬ И СКОМПОНОВАТЬ ПРАВИЛЬНО
             else
             {
                 //string Save = "Save";
                 var PathSave = Directory.GetCurrentDirectory();
                 PathSave += $@"\SudoData\Saves\{ChSave}.txt";
                 StreamReader test = new StreamReader(PathSave);
-                //string line;
-                //int localzero = 0;
-                //zero = 0;
-                //string jaja;
                 string gigi = MainWindow.gigi;
                 string prov = MainWindow.prov;
                 int t = 0;
-
-                //это проверка на 0 в готовой карте
-
-                //foreach (char c in prov)
-                //{
-
-                //    int p = Convert.ToInt32(c.ToString());
-                //    if (p == 0)
-                //    {
-                //        if (!MainsecondWindow.IsVisible)
-                //        {
-                //            delay();
-                //        }
-                //        //MessageBox.Show(c.ToString());
-
-                //    }
-                //}
-
                 for (int i = 0; i < 9; i++)
                 {
                     for (int j = 0; j < 9; j++)
@@ -141,6 +114,7 @@ namespace Sudo2
             //}
             string ButName;
             int LocCount = 0;
+            //делаем все использованые клеточки серыми
             char[] ch = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 
@@ -172,23 +146,10 @@ namespace Sudo2
                 LocCount = 0;
             }
 
-            FirstClicl =true;
+            DataFunc.FirstClicl =true;
 
         }
-        // private async void delay() 
-        //{
-        //await Task.Delay(1);
-        //    FileError = true;
-
-        //        MainsecondWindow.Show();
-
-        //        this.Close();
-
-        //}
-
-
-
-        //потом в класс отдельный запихнуть
+        //все для визуала
         public static Binding BindingBack = new Binding("Background");
         public static Button LastButton;
         public static Border LastBorder;
@@ -199,13 +160,13 @@ namespace Sudo2
         public static string butconGrid;
         bool GameEnd=false; 
         public static int Count = 0;
-        public static bool Saved = false;
+    
         public static string ChSave;
-        public static bool truemistMax=true;
-     
+        //public static bool truemistMax = true;
 
 
 
+        //выбор клеточки
         private void SelectACell(object sender, RoutedEventArgs e)
         {
             //данные для изменения вида поля
@@ -350,47 +311,15 @@ namespace Sudo2
             yy = xx;
          
         }
-     
-        //private void UpdateButtonRowBackground(string buttonRowName, Binding binding = null, Color? customColor = null)
-        //{
-        //    if (this.FindName(buttonRowName) is Button buttonRow)
-        //    {
-        //        if (binding != null)
-        //        {
-        //            // Если передан биндинг, используем его
-        //            buttonRow.SetBinding(Panel.BackgroundProperty, binding);
-        //        }
-        //        else if (customColor.HasValue)
-        //        {
-        //            // Если передан цвет, используем его
-        //            buttonRow.Background = new SolidColorBrush(customColor.Value);
-        //        }
-        //    }
-        //}
-        //private void UpdateButtonColBackground(string buttonColName, Binding binding = null, Color? customColor = null)
-        //{
-        //    if (this.FindName(buttonColName) is Button buttonCol) 
-        //    {
-        //        if (binding != null)
-        //        {
-        //            buttonCol.SetBinding(Panel.BackgroundProperty, binding);
-        //        }
-        //        else if (customColor.HasValue)
-        //        {
-        //            // Если передан цвет, используем его
-        //            buttonCol.Background = new SolidColorBrush(customColor.Value);
-        //        }
-        //    }
-        //}
+        //данные игры
         public static int[,] n = new int[9, 9];
         public static int[,] m= new int[9, 9];
         public static int zero = 0;
         public static int comp = 0;
         public static int mist = 0;
         public static int mistMax = 0;
-        public static bool FirstClicl=true;
-        public static bool TextFocus=false;
-        public static bool FileError=false;
+      
+
         
 
  
@@ -441,7 +370,7 @@ namespace Sudo2
         //выбор значения клетки при помощи клавиатуры
         private void SelNumDown(object sender, KeyEventArgs e)
         {
-            if (TextFocus == false)
+            if (DataFunc.TextFocusGame == false)
             {
                 if (DataFunc.KeyToValueMap.TryGetValue(e.Key, out int value))
                 {
@@ -567,13 +496,13 @@ namespace Sudo2
         private void text_LostFocus(object sender, RoutedEventArgs e)
         {
             //this.Close();
-            TextFocus=false;
+            DataFunc.TextFocusGame =false;
         }
 
         private void text_GotFocus(object sender, RoutedEventArgs e)
         {
             //this.Close();
-            TextFocus=true;
+            DataFunc.TextFocusGame =true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -589,27 +518,6 @@ namespace Sudo2
                 return;
             }
         }
-
-        //private void text_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
-        //{
-        //    if (text.Focusable == false) 
-        //    {
-        //    this.Close();
-        //    }
-        //}
-
-        //public static void CheckSybol( ref string  SaveName, ref bool SymError, TextBlock Context) 
-        //{
-        //    char[] er = { '<', '>', ':', '"', '|', '/', '?', '\\', '*' };
-        //    foreach (char ch in SaveName)
-        //    {
-        //        for (int i = 0; i < er.Length; i++)
-        //        {
-        //            if (er[i] == ch) { Context.Text = "Название имеет запрещенные символы"; SymError = true; } /*доделаааааааааааааааааааааааааааааааать*/
-        //        }
-
-        //    }
-        //}
 
         //кнопки (все из окна блока информации)
         private void SeptClick(object sender, RoutedEventArgs e)
@@ -629,167 +537,16 @@ namespace Sudo2
                     {
                         if(GameEnd==true)GameEnd = false;
                         //if (FirstClicl == false) { FirstClicl = true; }
-                        if (FirstClicl == false)
+                        if (DataFunc.FirstClicl == false)
                         {
                             DataFunc.InGame = true;
                             DataFunc.CheckingSaveNameAndStartGame(DataFunc.InGame, text);
-
-                            //string Save = text.Text;
-                            //string numbut;
-                            //string line;
-                            //bool DoubleS = false;
-                            //bool ErrorChar = false;
-                            ////CheckSybol( ref Save,ref ErrorChar, context);
-
-                            //char[] er = { '<', '>', ':', '"', '|', '/', '?', '\\', '*' };
-                            //if (text.Text != "")
-                            //{
-                            //foreach (char ch in Save)
-                            //{
-                            //    for (int i = 0; i < er.Length; i++)
-                            //    {
-                            //        if (er[i] == ch) { context.Text = "Название имеет запрещенные символы"; text.Focus(); ErrorChar = true; } /*доделаааааааааааааааааааааааааааааааать*/
-                            //    }
-
-                            //}
-                            //    if (ErrorChar == false)
-                            //    {
-
-                            //        var PathSavesName = Directory.GetCurrentDirectory();
-                            //        PathSavesName += $@"\SudoData\SavesNameOnly\SavesName.txt";
-                            //        //string testmg = text.Text;
-                            //        //создаем текстовик с названием файлов
-                            //        //StreamWriter SavedNameCreate = new StreamWriter(PathSavesName);
-                            //        //SavedNameCreate.Close();
-                            //        if (!File.Exists(PathSavesName))
-                            //        {
-                            //            // Если файл не существует, создаем его
-                            //            File.Create(PathSavesName).Close();
-                            //            //MessageBox.Show("lala");
-                            //        }
-                            //        //else { MessageBox.Show("lalalalal"); }
-
-
-                            //            StreamReader SavesNameRead = new StreamReader(PathSavesName);
-                            //        while ((line = SavesNameRead.ReadLine()) != null)
-                            //        {
-                            //            if (line == Save) { DoubleS = true; context.Text = "Сохранение успешно обновлено"; /*nana.Text = " gg";*/ }
-                            //        }
-                            //        SavesNameRead.Close();
-                            //        if (DoubleS == false)
-                            //        {
-
-
-                            //            StreamWriter SavesNameIN = new StreamWriter(PathSavesName, true);
-                            //            SavesNameIN.WriteLine(Save);
-                            //            SavesNameIN.Close();
-
-                            //            var PathSave = Directory.GetCurrentDirectory();
-                            //            PathSave += $@"\SudoData\Saves\{Save}.txt";
-                            //            StreamWriter lana = new StreamWriter(PathSave);
-                            //            //lana.WriteLine(testmg);
-                            //            lana.WriteLine("карта");
-
-
-                            //            for (int i = 0; i < 9; i++)
-                            //            {
-                            //                for (int j = 0; j < 9; j++)
-                            //                {
-                            //                    //string buttonName = $"Bt{i}{j}";
-                            //                    //if (this.FindName(buttonName) is Button button)
-                            //                    //{
-                            //                    //    numbut = Convert.ToString(button.Content);
-                            //                    //    if (Convert.ToString(button.Content) == "") { numbut = "0"; }
-                            //                    //    lana.Write(numbut);
-                            //                    //}
-                            //                    numbut = m[i, j].ToString();
-
-                            //                    lana.Write(numbut);
-                            //                }
-                            //                lana.WriteLine();
-                            //            }
-
-                            //            lana.WriteLine("проверка");
-                            //            for (int i = 0; i < 9; i++)
-                            //            {
-                            //                for (int j = 0; j < 9; j++)
-                            //                {
-                            //                    numbut = n[i, j].ToString();
-
-                            //                    lana.Write(numbut);
-                            //                }
-                            //                lana.WriteLine();
-                            //            }
-                            //            lana.WriteLine($"mist={mist}");
-                            //            lana.WriteLine($"MMax={mistMax}");
-                            //            lana.WriteLine($"zero={zero}");
-                            //            //lana.WriteLine(":lalala");
-                            //            lana.Close();
-                            //            context.Text = "Сохранение успешно сохранено";
-                            //        }
-                            //        else
-                            //        {
-
-                            //            var PathSaveCopy = Directory.GetCurrentDirectory();
-                            //            PathSaveCopy += $@"\SudoData\Saves\{Save}-Copy.txt";
-                            //            var PathSave = Directory.GetCurrentDirectory();
-                            //            PathSave += $@"\SudoData\Saves\{Save}.txt";
-                            //            StreamWriter SaveCopy = new StreamWriter(PathSaveCopy);
-                            //            SaveCopy.WriteLine("карта");
-
-
-                            //            for (int i = 0; i < 9; i++)
-                            //            {
-                            //                for (int j = 0; j < 9; j++)
-                            //                {
-                            //                    //string buttonName = $"Bt{i}{j}";
-                            //                    //if (this.FindName(buttonName) is Button button)
-                            //                    //{
-                            //                    //    numbut = Convert.ToString(button.Content);
-                            //                    //    if (Convert.ToString(button.Content) == "") { numbut = "0"; }
-                            //                    //    lana.Write(numbut);
-                            //                    //}
-                            //                    numbut = m[i, j].ToString();
-
-                            //                    SaveCopy.Write(numbut);
-                            //                }
-                            //                SaveCopy.WriteLine();
-                            //            }
-
-                            //            SaveCopy.WriteLine("проверка");
-                            //            for (int i = 0; i < 9; i++)
-                            //            {
-                            //                for (int j = 0; j < 9; j++)
-                            //                {
-                            //                    numbut = n[i, j].ToString();
-
-                            //                    SaveCopy.Write(numbut);
-                            //                }
-                            //                SaveCopy.WriteLine();
-                            //            }
-                            //            SaveCopy.WriteLine($"mist={mist}");
-                            //            SaveCopy.WriteLine($"MMax={mistMax}");
-                            //            SaveCopy.WriteLine($"zero={zero}");
-                            //            //lana.WriteLine(":lalala");
-                            //            SaveCopy.Close();
-                            //            File.Delete(PathSave);
-                            //            File.Move(PathSaveCopy, PathSave);
-                            //        }
-                            //    }
-                            //    //else { this.Close(); }
-                            //}
-                            //else { context.Text = " Поле для названия пустое"; text.Focus(); }
                         }
                         else
                         {
-                            FirstClicl = false; text.Visibility = Visibility; text.Focus(); text.SelectAll();
+                            DataFunc.FirstClicl = false; text.Visibility = Visibility; text.Focus(); text.SelectAll();
                         }
                     }
-                    //else if (GameEnd == true & context.Text == "При автосохранении обьявите\r\n название сохранeния") 
-                    //{
-                    
-                    //}
-                    //else { context.Text = "huui tebe"; }
                     break;
                     
             }

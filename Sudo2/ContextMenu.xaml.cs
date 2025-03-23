@@ -85,6 +85,9 @@ namespace Sudo2
                 case 9:
                     TBERROR.Text = "Сохранение c данным названием уже существует";
                     break;
+                case 10:
+                    TBERROR.Text = "Сохранение доступно только для чтения";
+                    break;
 
             }
             //await Task.Delay(2500);
@@ -107,40 +110,6 @@ namespace Sudo2
                 case "BtAutoSaveGo":
                     DataFunc.InGame = false;
                     DataFunc.CheckingSaveNameAndStartGame(DataFunc.InGame, text);
-                    //bool ErrorChar = false;
-                    ////CheckSybol( ref Save,ref ErrorChar, context);
-
-                    //char[] er = { '<', '>', ':', '"', '|', '/', '?', '\\', '*' };
-                    //if (text.Text != "")
-                    //{
-                    //    foreach (char ch in text.Text)
-                    //    {
-                    //        for (int i = 0; i < er.Length; i++)
-                    //        {
-                    //            if (er[i] == ch) {  ErrorChar = true; }
-                    //        }
-
-                    //    }
-                    //    if (ErrorChar == false)
-                    //    {
-                    //        Game.Saved = false;
-                    //        //secondMainWindow.GBMenu.Visibility = Visibility.Visible;
-                    //        new Game().Show();
-                    //        //secondMainWindow.Close();
-                    //        AutoSave.Visibility = Visibility.Collapsed;
-                    //        MainWindow.CurrentInstance.Close();
-                    //    }
-                    //    else 
-                    //    {
-                    //        DataFunc.ERROR = 8;
-                    //        MainWindow.CurrentInstance.Delay2();
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    DataFunc.ERROR = 7;
-                    //    MainWindow.CurrentInstance.Delay2();
-                    //}
                     break;
             }
         }

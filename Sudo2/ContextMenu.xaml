@@ -27,6 +27,11 @@
                     <ColumnDefinition Width="162*"/>
                     <ColumnDefinition Width="67*"/>
                 </Grid.ColumnDefinitions>
+                
+                
+                <!--Контекстное меню-->
+                
+                
                 <TextBlock x:Name="contx" Text="Ошибка" Foreground="Red" Grid.Column="1" TextAlignment="Center"  VerticalAlignment="Center" FontSize="35" Height="46"/>
                 <TextBlock x:Name="TBERROR"  Foreground="Red" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" TextWrapping="Wrap"  VerticalAlignment="Center" FontSize="25" />
 
